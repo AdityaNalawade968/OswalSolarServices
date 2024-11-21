@@ -36,6 +36,7 @@ public class UsersController {
 
 	@PostMapping("/checkUser")
 	public ResponseEntity<Map<String, Object>> checkUser(@RequestBody Users Users) throws SQLException {
+		System.out.println(Users);
 		Users isValid = UsersService.checkUser(Users);
 
 		Map<String, Object> response = new HashMap<>();
