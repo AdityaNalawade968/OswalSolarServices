@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,7 @@ import com.solarservices.oswalservices.repo.UsersRepo;
 public class UsersDao {
 	@Autowired
 	UsersRepo UsersRepo;
+	private DataSource dataSource;
 
 	public List<Users> getUsers() {
 		return UsersRepo.findAll();
@@ -27,7 +30,7 @@ public class UsersDao {
 		String email = users.getEmail();
 		String sql = "SELECT count(1) FROM users WHERE email = ?";
 
-		try (Connection conn = DatabaseConnectionManager.getConnection();
+		try (Connection conn = dataSource.getConnection();
 				PreparedStatement isPresent = conn.prepareStatement(sql)) {
 
 			isPresent.setString(1, email);
@@ -55,7 +58,7 @@ public class UsersDao {
 
 		String sql = "SELECT * FROM users WHERE email = ?";
 
-		Connection conn = DatabaseConnectionManager.getConnection(); 
+		Connection conn = dataSource.getConnection(); 
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setString(1, email);
 		Users sendUser = null;
