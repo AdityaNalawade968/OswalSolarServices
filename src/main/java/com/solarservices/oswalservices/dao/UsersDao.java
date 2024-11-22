@@ -55,8 +55,7 @@ public class UsersDao {
 
 		String sql = "SELECT * FROM users WHERE email = ?";
 
-		Connection conn = DatabaseConnectionManager.getConnection();
-		
+		Connection conn = DatabaseConnectionManager.getConnection(); 
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setString(1, email);
 		Users sendUser = null;
