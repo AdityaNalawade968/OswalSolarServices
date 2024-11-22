@@ -3,6 +3,7 @@ package com.solarservices.oswalservices.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,27 +21,34 @@ public class DailyReportDao {
 
 	@Autowired
 	DailyReportRepo dailyReportRepo;
-	
+
 	String url = "jdbc:mysql://junction.proxy.rlwy.net:29214/solarservices";
-    String username = "root";
-    String password = "HburqaJheEbPczwXyREVimuqIDLZdDRa"; 
-    
+	String username = "root";
+	String password = "HburqaJheEbPczwXyREVimuqIDLZdDRa";
 
 	public List<DailyReport> getDailyReport(DailyReport dailyReport) {
-		
-		int userId=dailyReport.getUserId();
-	
-		List<DailyReport> dailyReports = new ArrayList<>();
- 
-		String sql = "SELECT * FROM daily_report WHERE user_id ="+userId;
 
-		// Create a connection
+		int userId = dailyReport.getUserId();
+		Date date = dailyReport.getDate();
+
+		String monthAndYear = dailyReport.getConveyance();
+		String[] parts = monthAndYear.split("-");
+		String year = parts[0];
+		String month = parts[1];
+ 
+		List<DailyReport> dailyReports = new ArrayList<>();
+
+		String sql = "SELECT * FROM daily_report WHERE user_id = " + userId + 
+	             " AND MONTH(date) = '" + month + "' AND YEAR(date) = '" + year + "'";
+
+
 		try (Connection conn = DriverManager.getConnection(url, username, password);
 				PreparedStatement pstmt = conn.prepareStatement(sql);
-				ResultSet rs = pstmt.executeQuery()) { 
-			while (rs.next()) { 
+				ResultSet rs = pstmt.executeQuery()) {
+			while (rs.next()) {
 				DailyReport report = new DailyReport();
 				report.setDailyReportId(rs.getInt("daily_report_id"));
+				report.setDate(rs.getDate("date"));
 				report.setFromLocation(rs.getString("from_location"));
 				report.setDestinationName(rs.getString("destination_name"));
 				report.setVehicleType(rs.getString("vehicle_type"));
@@ -55,8 +63,8 @@ public class DailyReportDao {
 				dailyReports.add(report);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace(); 
-		} 
+			e.printStackTrace();
+		}
 		return dailyReports;
 	}
 

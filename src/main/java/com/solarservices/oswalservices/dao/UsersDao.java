@@ -72,6 +72,7 @@ public class UsersDao {
 	                    users.setfName(rs.getString("f_name"));
 	                    users.setmName(rs.getString("m_name"));
 	                    users.setlName(rs.getString("l_name"));
+	                    users.setVillageName(rs.getString("village_name"));
 	                    users.setUserName(rs.getString("user_name"));
 	                    users.setEmail(rs.getString("email"));
 	                    return users;  
