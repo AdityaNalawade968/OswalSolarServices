@@ -1,6 +1,7 @@
 package com.solarservices.oswalservices.dao;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,24 +20,25 @@ public class DailyReportDao {
 
 	@Autowired
 	DailyReportRepo dailyReportRepo;
+	
+	String url = "jdbc:mysql://junction.proxy.rlwy.net:29214/solarservices";
+    String username = "root";
+    String password = "HburqaJheEbPczwXyREVimuqIDLZdDRa"; 
+    
 
 	public List<DailyReport> getDailyReport(DailyReport dailyReport) {
 		
 		int userId=dailyReport.getUserId();
 	
 		List<DailyReport> dailyReports = new ArrayList<>();
-
-		// SQL query to get daily report data
+ 
 		String sql = "SELECT * FROM daily_report WHERE user_id ="+userId;
 
 		// Create a connection
-		try (Connection conn = DatabaseConnectionManager.getConnection();
+		try (Connection conn = DriverManager.getConnection(url, username, password);
 				PreparedStatement pstmt = conn.prepareStatement(sql);
-				ResultSet rs = pstmt.executeQuery()) {
-
-			// Process each row in the result set
-			while (rs.next()) {
-				// Create a DailyReport object and populate it with data from the result set
+				ResultSet rs = pstmt.executeQuery()) { 
+			while (rs.next()) { 
 				DailyReport report = new DailyReport();
 				report.setDailyReportId(rs.getInt("daily_report_id"));
 				report.setFromLocation(rs.getString("from_location"));
@@ -53,7 +55,7 @@ public class DailyReportDao {
 				dailyReports.add(report);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace(); // Log the exception or handle it appropriately
+			e.printStackTrace(); 
 		} 
 		return dailyReports;
 	}
